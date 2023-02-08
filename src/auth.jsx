@@ -1,28 +1,45 @@
-import React from 'react'
-import { Navigate, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { blogdata } from "./blogdata";
 
 const AuthContext = React.createContext();
 
-function AuthProvider({children}){
+const adminList = ["Richard", "Laura", "Luis"];
+
+function AuthProvider({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = React.useState(null);
-  const login = ({username}) =>{
-    setUser({ username })
-    navigate('/profile')
-  }
+  const [data, setData] = React.useState(blogdata);
 
-  const logout = () =>{
-    setUser(null)
-    navigate('/')
-  }
 
-  const auth = { user, login, logout };
+  const login = ({ username, genero }) => {
+    let from = location.state?.from?.pathname || -1;
+    const isAdmin = adminList.find((admin) => admin === username);
+    setUser({ username, isAdmin, genero });
+    navigate(from, { replace: true });
+  };
 
-  return (
-    <AuthContext.Provider value={auth}>
-      {children}
-    </AuthContext.Provider>
-  )
+  const logout = () => {
+    setUser(null);
+    setData(blogdata);
+    navigate("/");
+  };
+
+  const deletePost = (id) => {
+    const filterData = data.filter((post) => post.id !== id);
+    setData(filterData);
+    return data;
+  };
+  const auth = {
+    user,
+    login,
+    logout,
+    data,
+    deletePost
+  };
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
 
 function useAuth() {
@@ -30,18 +47,15 @@ function useAuth() {
   return auth;
 }
 
-function AuthRoute(props){
+function AuthRoute(props) {
   const auth = useAuth();
+  const location = useLocation();
 
-  if(!auth.user){
-    return <Navigate to='/login'/>;
+  if (!auth.user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return props.children;
 }
 
-export {
-  AuthProvider,
-  useAuth,
-  AuthRoute
-};
+export { AuthProvider, useAuth, AuthRoute };

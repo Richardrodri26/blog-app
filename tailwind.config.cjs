@@ -4,8 +4,14 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'wallpaper': "url('./src/assets/wallpaper.jpg')",
+        'picHome': "url('./src/assets/picHome.svg')"
+      },
   },
   plugins: [],
+}
 }

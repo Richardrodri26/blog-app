@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 @layer components {
-  .menu {
-    @apply;
-  }
+  .pattern {
+    background: radial-gradient(circle at 40% 40%, #2962f3 25%, transparent 26%),radial-gradient(circle at 60% 60%, #2962f380 25%, transparent 26%);
+        background-size: 4em 4em;
+        background-color: #ffffff;
+        opacity: 1
+    }
+
 }
